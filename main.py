@@ -27,7 +27,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
 
     if s[0]-1 >= 0 and not (s[0]-1 == 1 and s[1] == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0] - 1, s[1]), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0] - 1, s[1]), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0]-1, s[1]) + gamma * v1
         if cumulative:
             v += res
@@ -38,7 +38,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
                 pi = "N"
     if s[0]+1 < state_rows and not (s[0] + 1 == 1 and s[1] == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0] + 1, s[1]), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0] + 1, s[1]), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0]+1, s[1]) + gamma * v1
         if cumulative:
             v += res
@@ -52,7 +52,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
 
     if s[1]-1 >= 0 and not (s[0] == 1 and s[1]-1 == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0], s[1] - 1), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0], s[1] - 1), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0], s[1]-1) + gamma * v1
         if cumulative:
             v += res
@@ -65,7 +65,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
                 pi += " & W"
     if s[1]+1 < state_columns and not (s[0] == 1 and s[1] + 1 == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0], s[1] + 1), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0], s[1] + 1), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0], s[1]+1) + gamma * v1
         if cumulative:
             v += res
@@ -79,7 +79,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
 
     if s[0]-1 >= 0 and s[1]-1 >= 0 and not (s[0]-1 == 1 and s[1]-1 == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0] - 1, s[1] - 1), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0] - 1, s[1] - 1), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0]-1, s[1]-1) + gamma * v1
         if cumulative:
             v += res
@@ -92,7 +92,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
                 pi += " & NW"
     if s[0]+1 < state_rows and s[1]+1 < state_columns and not (s[0] + 1 == 1 and s[1] + 1 == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0] + 1, s[1] + 1), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0] + 1, s[1] + 1), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0]+1, s[1]+1) + gamma * v1
         if cumulative:
             v += res
@@ -106,7 +106,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
 
     if s[0]-1 >= 0 and s[1]+1 < state_columns and not (s[0] - 1 == 1 and s[1] + 1 == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0] - 1, s[1] + 1), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0] - 1, s[1] + 1), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0]-1, s[1]+1) + gamma * v1
         if cumulative:
             v += res
@@ -119,7 +119,7 @@ def get_v_and_pi(s, rec_depth=0, cumulative=False, max_rec_depth=9):
                 pi += " & NE"
     if s[0]+1 < state_rows and s[1]-1 >= 0 and not (s[0] + 1 == 1 and s[1] - 1 == 2):
         if math.pow(gamma, rec_depth) >= min_gamma:
-            v1,_ = get_v_and_pi((s[0] + 1, s[1] - 1), rec_depth + 1, cumulative)
+            v1,_ = get_v_and_pi((s[0] + 1, s[1] - 1), rec_depth + 1, cumulative, max_rec_depth)
         res = rewards.item(s[0]+1, s[1]-1) + gamma * v1
         if cumulative:
             v += res
@@ -146,14 +146,14 @@ def main():
     num = input("please input the number of the wanted result \n")
     print("\n")
 
-    if num == 1:
+    if num == "1":
         for r in range(0, state_rows):
             for c in range(0, state_columns):
                 s = (r,c)
                 v, pi = get_v_and_pi(s, cumulative=True, max_rec_depth=2)
 
                 print(f"State: {chr(97 + s[1])}{3 - s[0]} ")
-                print(f"    V*(s): {v}")
+                print(f"    v(s): {v}")
                 print()
     else:
         for r in range(0, state_rows):
@@ -162,8 +162,8 @@ def main():
                 v, pi = get_v_and_pi(s)
 
                 print(f"State: {chr(97 + s[1])}{3 - s[0]} ")
-                print(f"    Pi*: {pi}")
-                print(f"    V*(s): {v}")
+                print(f"    pi*: {pi}")
+                print(f"    v*(s): {v}")
                 print()
 
 
